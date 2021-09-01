@@ -2,17 +2,22 @@ import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
+
+
 import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../utils/mutations';
+import { ADD_USER } from '../utils/mutation';
 
 const SignupForm = () => {
-  const [addUser] = useMutation(ADD_USER)
-
+  // set initial form state
   const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
-
+  // set state for form validation
   const [validated] = useState(false);
-
+  // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+  // Add in the logic for ADD_USER
+  const [addUser, { error }] = useMutation(ADD_USER);
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -22,6 +27,7 @@ const SignupForm = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
+    // check if form has everything (as per react-bootstrap docs)
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -29,16 +35,11 @@ const SignupForm = () => {
     }
 
     try {
+      // const response = await createUser(userFormData);
       const { data } = await addUser({
-        variables: { ...userFormData }
+        variables: {...userFormData},
       });
-      console.log(data);
-
-      if (!data) {
-        throw new Error('something went wrong!');
-      }
-
-      console.log(data.addUser.user, data.addUser.token);
+      
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
@@ -54,7 +55,9 @@ const SignupForm = () => {
 
   return (
     <>
+      {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
+        {/* show alert if server response is bad */}
         <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
           Something went wrong with your signup!
         </Alert>
