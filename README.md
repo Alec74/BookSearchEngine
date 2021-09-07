@@ -20,7 +20,7 @@
 
   ## Usage
 
-  Navigate to the live webpage! https://dry-beyond-35526.herokuapp.com/
+  Navigate to the live webpage https://serene-inlet-26362.herokuapp.com/
 
   ## Contributing
 
